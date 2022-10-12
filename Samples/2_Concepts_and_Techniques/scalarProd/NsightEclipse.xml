@@ -4,9 +4,9 @@
   <name>scalarProd</name>
   <cuda_api_list>
     <toolkit>cudaMalloc</toolkit>
-    <toolkit>cudaFree</toolkit>
     <toolkit>cudaDeviceSynchronize</toolkit>
     <toolkit>cudaMemcpy</toolkit>
+    <toolkit>cudaFree</toolkit>
   </cuda_api_list>
   <description><![CDATA[This sample calculates scalar products of a given set of input vector pairs.]]></description>
   <devicecompilation>whole</devicecompilation>
@@ -33,8 +33,6 @@
     <scope>1:CUDA Basic Topics</scope>
     <scope>3:Linear Algebra</scope>
   </scopes>
-  <sm-arch>sm35</sm-arch>
-  <sm-arch>sm37</sm-arch>
   <sm-arch>sm50</sm-arch>
   <sm-arch>sm52</sm-arch>
   <sm-arch>sm53</sm-arch>
@@ -46,6 +44,7 @@
   <sm-arch>sm80</sm-arch>
   <sm-arch>sm86</sm-arch>
   <sm-arch>sm87</sm-arch>
+  <sm-arch>sm90</sm-arch>
   <supported_envs>
     <env>
       <arch>x86_64</arch>

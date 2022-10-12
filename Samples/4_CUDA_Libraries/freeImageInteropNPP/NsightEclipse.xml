@@ -3,11 +3,11 @@
 <entry>
   <name>freeImageInteropNPP</name>
   <cuda_api_list>
-    <toolkit>cudaGetDeviceCount</toolkit>
-    <toolkit>cudaDriverGetVersion</toolkit>
-    <toolkit>cudaDeviceInit</toolkit>
-    <toolkit>cudaSetDevice</toolkit>
     <toolkit>cudaRuntimeGetVersion</toolkit>
+    <toolkit>cudaSetDevice</toolkit>
+    <toolkit>cudaGetDeviceCount</toolkit>
+    <toolkit>cudaDeviceInit</toolkit>
+    <toolkit>cudaDriverGetVersion</toolkit>
     <toolkit>cudaGetDeviceProperties</toolkit>
   </cuda_api_list>
   <description><![CDATA[A simple CUDA Sample demonstrate how to use FreeImage library with NPP.]]></description>
@@ -52,8 +52,6 @@
     <scope>1:Performance Strategies</scope>
     <scope>2:Image Processing</scope>
   </scopes>
-  <sm-arch>sm35</sm-arch>
-  <sm-arch>sm37</sm-arch>
   <sm-arch>sm50</sm-arch>
   <sm-arch>sm52</sm-arch>
   <sm-arch>sm53</sm-arch>
@@ -65,6 +63,7 @@
   <sm-arch>sm80</sm-arch>
   <sm-arch>sm86</sm-arch>
   <sm-arch>sm87</sm-arch>
+  <sm-arch>sm90</sm-arch>
   <supported_envs>
     <env>
       <arch>x86_64</arch>
