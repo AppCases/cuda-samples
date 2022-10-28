@@ -84,9 +84,9 @@ cudaStream_t stream[STREAM_COUNT];
 
 cudaEvent_t start, stop;
 
-int N = 1 << 28;
+int N = 1 << 26;
 int nreps = 10;  // number of times each experiment is repeated
-int inner_reps = 5;
+int inner_reps = 500;
 
 int memsize;
 
@@ -144,7 +144,7 @@ int main(int argc, char *argv[]) {
       max((32.0f / (_ConvertSMVer2Cores(deviceProp.major, deviceProp.minor) *
                     (float)deviceProp.multiProcessorCount)),
           1.0f);
-  N = (int)((float)N / scale_factor * 1.6);
+  N = (int)((float)N / scale_factor);
 
   printf("> Device name: %s\n", deviceProp.name);
   printf("> CUDA Capability %d.%d hardware with %d multi-processors\n",
