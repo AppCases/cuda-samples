@@ -279,9 +279,9 @@ LIBRARIES :=
 
 # Gencode arguments
 ifeq ($(TARGET_ARCH),$(filter $(TARGET_ARCH),armv7l aarch64 sbsa))
-SMS ?= 80
+SMS ?= 80 86
 else
-SMS ?= 80
+SMS ?= 80 86
 endif
 
 ifeq ($(SMS),)
