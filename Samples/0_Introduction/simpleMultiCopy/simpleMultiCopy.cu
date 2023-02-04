@@ -167,12 +167,15 @@ int main(int argc, char *argv[]) {
   for (int i = 0; i < STREAM_COUNT; ++i) {
     checkCudaErrors(
         cudaHostAlloc(&h_data_in[i], memsize, cudaHostAllocDefault));
-    checkCudaErrors(cudaMalloc(&d_data_in[i], memsize));
-    checkCudaErrors(cudaMemset(d_data_in[i], 0, memsize));
 
+    if (i == 0) {
+      checkCudaErrors(cudaMalloc(&d_data_in[i], memsize));
+      checkCudaErrors(cudaMemset(d_data_in[i], 0, memsize));
+
+      checkCudaErrors(cudaMalloc(&d_data_out[i], memsize));
+    }
     checkCudaErrors(
-        cudaHostAlloc(&h_data_out[i], memsize, cudaHostAllocDefault));
-    checkCudaErrors(cudaMalloc(&d_data_out[i], memsize));
+          cudaHostAlloc(&h_data_out[i], memsize, cudaHostAllocDefault));
 
     checkCudaErrors(cudaStreamCreate(&stream[i]));
     checkCudaErrors(cudaEventCreate(&cycleDone[i]));
@@ -250,7 +253,13 @@ int main(int argc, char *argv[]) {
          max(max(memcpy_h2d_time, memcpy_d2h_time), kernel_time));
 
   // Process pipelined work
+  checkCudaErrors(cudaMalloc(&d_data_in[0], memsize));
+  checkCudaErrors(cudaMemset(d_data_in[0], 0, memsize));
+  checkCudaErrors(cudaMalloc(&d_data_out[0], memsize));
   float serial_time = processWithStreams(1);
+  cudaFree(d_data_in[0]);
+  cudaFree(d_data_out[0]);
+
   float overlap_time = processWithStreams(STREAM_COUNT);
 
   printf("\nAverage measured timings over %d repetitions:\n", nreps);
@@ -277,10 +286,10 @@ int main(int argc, char *argv[]) {
 
   for (int i = 0; i < STREAM_COUNT; ++i) {
     cudaFreeHost(h_data_in[i]);
-    cudaFree(d_data_in[i]);
+    // cudaFree(d_data_in[i]);
 
     cudaFreeHost(h_data_out[i]);
-    cudaFree(d_data_out[i]);
+    // cudaFree(d_data_out[i]);
 
     cudaStreamDestroy(stream[i]);
     cudaEventDestroy(cycleDone[i]);
@@ -317,6 +326,16 @@ float processWithStreams(int streams_used) {
     // Read new input
     memcpy(h_data_in[next_stream], h_data_source, memsize);
 #endif
+    if (current_stream) {
+      checkCudaErrors(cudaMalloc(&d_data_in[current_stream], memsize));
+      checkCudaErrors(cudaMemset(d_data_in[current_stream], 0, memsize));
+      checkCudaErrors(cudaMalloc(&d_data_out[current_stream], memsize));
+    }
+    if (next_stream != current_stream) {
+      checkCudaErrors(cudaMalloc(&d_data_in[next_stream], memsize));
+      checkCudaErrors(cudaMemset(d_data_in[next_stream], 0, memsize));
+      checkCudaErrors(cudaMalloc(&d_data_out[next_stream], memsize));
+    }
 
     // Ensure that processing and copying of the last cycle has finished
     cudaEventSynchronize(cycleDone[next_stream]);
@@ -337,6 +356,17 @@ float processWithStreams(int streams_used) {
 
     checkCudaErrors(
         cudaEventRecord(cycleDone[current_stream], stream[current_stream]));
+    
+    if (current_stream) {
+      checkCudaErrors(cudaMalloc(&d_data_in[current_stream], memsize));
+      checkCudaErrors(cudaMemset(d_data_in[current_stream], 0, memsize));
+      checkCudaErrors(cudaMalloc(&d_data_out[current_stream], memsize));
+    }
+    if (next_stream != current_stream) {
+      checkCudaErrors(cudaMalloc(&d_data_in[next_stream], memsize));
+      checkCudaErrors(cudaMemset(d_data_in[next_stream], 0, memsize));
+      checkCudaErrors(cudaMalloc(&d_data_out[next_stream], memsize));
+    }
 
     current_stream = next_stream;
   }
